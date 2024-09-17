@@ -17,6 +17,8 @@
       "@helpers/*": ["src/helpers/*"],
       "@user/*": ["src/modules/user/*"],
       "@auth/*": ["src/modules/auth/*"],
+      "@companies/*": ["src/modules/companies/*"],
+      "@jobs/*": ["src/modules/jobs/*"],
       "@shared/*": ["src/shared/*"],
       "@db/*": ["src/database/*"],
       "@entities/*": ["src/entities/*"]

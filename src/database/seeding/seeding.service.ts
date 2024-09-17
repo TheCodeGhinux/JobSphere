@@ -24,13 +24,13 @@ export class SeedingService {
           first_name: 'John',
           last_name: 'Smith',
           email: 'john.smith@example.com',
-          password: 'password',
+          password: 'Password@123',
         });
         const u2 = userRepository.create({
           first_name: 'Jane',
           last_name: 'Smith',
           email: 'jane.smith@example.com',
-          password: 'password',
+          password: 'Password@123',
         });
 
         await userRepository.save([u1, u2]);

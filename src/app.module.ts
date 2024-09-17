@@ -20,6 +20,8 @@ import { UserModule } from '@user/user.module';
 import ProbeController from '@/probe.controller';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { JobsModule } from './modules/jobs/jobs.module';
+import { CompaniesModule } from './modules/companies/companies.module';
 @Module({
   providers: [
     {
@@ -109,6 +111,9 @@ import { join } from 'path';
         index: false,
       },
     }),
+
+    JobsModule,
+    CompaniesModule,
   ],
   controllers: [HealthController, ProbeController],
 })

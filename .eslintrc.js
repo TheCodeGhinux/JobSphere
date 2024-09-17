@@ -51,29 +51,22 @@ module.exports = {
     'import/no-unresolved': [
       'error',
       {
-        ignore: [
-          '^@/',
-          '^@user/',
-          '^@constant/',
-          '^@helpers/',
-          '^@auth/',
-          '^@entities/',
-          '^@config/',
-          '^@shared',
-          '^@db/',
-          '^@*',
-        ],
+        ignore: ['^@.*$'],
       },
     ],
   },
   settings: {
+    'import/parsers': {
+      '@typescript-eslint/parser': ['.ts', '.tsx'],
+    },
+    'import/extensions': ['.js', '.jsx', '.ts', '.tsx'],
     'import/resolver': {
       typescript: {
         project: './tsconfig.json',
         alwaysTryTypes: true,
       },
       node: {
-        paths: ['src'],
+        // paths: ['src'],
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
     },
