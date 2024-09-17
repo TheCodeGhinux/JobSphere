@@ -1,5 +1,5 @@
 import { string } from 'joi';
-import { User } from '@user/entities/user.entity';
+import { User, UserType } from '@user/entities/user.entity';
 
 export const mockUser: User = {
   id: 'user1',
@@ -7,11 +7,12 @@ export const mockUser: User = {
   last_name: 'Doe',
   email: 'john@example.com',
   password: 'hashedpassword',
-  phone: '1234567890',
+  phone_number: '1234567890',
   is_active: true,
+  user_type: UserType.USER,
   status: 'active',
   created_at: new Date(),
   updated_at: new Date(),
-  // hashPassword: () => null,
+  hashPassword: () => null,
   // hashPassword: string
 };
