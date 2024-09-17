@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsOptional, IsString, IsStrongPassword, MinLength } from 'class-validator';
+import { User, UserType } from '@user/entities/user.entity';
 
 export class CreateUserDTO {
   @ApiProperty({
@@ -42,6 +43,22 @@ export class CreateUserDTO {
     }
   )
   password: string;
+
+  @ApiProperty({
+    description: 'The phone number of the user',
+    example: 'Doe',
+  })
+  @IsNotEmpty()
+  @IsString()
+  phone_number: string;
+
+  @ApiProperty({
+    description: 'Account type of user, either company or user',
+    example: 'user',
+  })
+  @IsNotEmpty()
+  @IsString()
+  user_type: UserType;
 
   @ApiProperty({
     description: 'An optional admin secret for elevated permissions',
