@@ -61,10 +61,4 @@ export default class RegistrationController {
   async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) res: Response) {
     return this.authService.loginUser(loginDto, res);
   }
-
-  @HttpCode(200)
-  @Get(':id')
-  async logoutUser(@Param('id') id: string, @Res({ passthrough: true }) res: Response) {
-    return this.authService.logoutUser(id, res);
-  }
 }
