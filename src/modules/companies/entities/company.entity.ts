@@ -1,11 +1,18 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  BeforeInsert,
+  BeforeUpdate,
+} from 'typeorm';
 import { AbstractBaseEntity } from '@entities/base.entity';
+import * as bcrypt from 'bcryptjs';
+import { UserType } from '@user/entities/user.entity';
 
 @Entity('companies')
 export class Company extends AbstractBaseEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
   @Column({ unique: true })
   name: string;
 
@@ -22,5 +29,17 @@ export class Company extends AbstractBaseEntity {
   location: string;
 
   @Column()
-  contactEmail: string;
+  company_email: string;
+
+  @Column({ type: 'enum', enum: UserType, default: UserType.COMPANY, nullable: true })
+  user_type: UserType;
+
+  @Column({ nullable: false })
+  password: string;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
 }

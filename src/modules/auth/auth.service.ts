@@ -15,11 +15,14 @@ import { GoogleVerificationPayloadInterface } from '@auth/interfaces/GoogleVerif
 import { CustomHttpException } from '@helpers/custom-http-filter';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
+import { CreateCompanyDto } from '@companies/dto/create-company.dto';
+import { CompaniesService } from '@companies/companies.service';
 
 @Injectable()
 export default class AuthenticationService {
   constructor(
     private userService: UserService,
+    private companiesService: CompaniesService,
     private jwtService: JwtService,
     private googleAuthService: GoogleAuthService,
     private configService: ConfigService
@@ -62,6 +65,36 @@ export default class AuthenticationService {
     };
   }
 
+  async createNewCompany(createCompanyDto: CreateCompanyDto) {
+    const companyEmailExists = await this.companiesService.getCompanyByEmail(createCompanyDto.company_email);
+
+    if (companyEmailExists) {
+      throw new CustomHttpException(SYS_MSG.RESOURCE_ALREADY_EXISTS('Company email'), HttpStatus.BAD_REQUEST);
+    }
+
+    const companyName = await this.companiesService.getCompanyByname(createCompanyDto.name);
+
+    if (companyName) {
+      throw new CustomHttpException(SYS_MSG.RESOURCE_ALREADY_EXISTS('Company'), HttpStatus.BAD_REQUEST);
+    }
+
+    const company = await this.companiesService.createCompany(createCompanyDto);
+    if (!company) {
+      throw new CustomHttpException('Failed to create new company', HttpStatus.BAD_REQUEST);
+    }
+
+    const access_token = this.jwtService.sign({
+      id: company.id,
+      sub: company.id,
+      company_email: company.company_email,
+    });
+
+    return {
+      message: 'Company created successfully',
+      access_token,
+      data: company,
+    };
+  }
   async loginUser(loginDto: LoginDto, res: any) {
     const { email, password } = loginDto;
 
