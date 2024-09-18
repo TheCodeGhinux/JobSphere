@@ -36,17 +36,17 @@ import { SoftDeleteUserDocs, UpdateUserDocs } from '@user/docs/user-swagger.doc'
 
 @ApiBearerAuth()
 @ApiTags('Users')
-@Controller('users')
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('user/email')
+  @Get('email')
   async findUserByEmail(@Req() req) {
     const email = req.user.email;
     return this.userService.findUserByEmail(email);
   }
 
-  @Get('user/id')
+  @Get('id')
   async findUserById(@Req() req) {
     const userId = req.user.id;
     return this.userService.findUserById(userId);
