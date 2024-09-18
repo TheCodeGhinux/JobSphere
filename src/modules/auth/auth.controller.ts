@@ -40,7 +40,8 @@ import {
   SignInTokenDocs,
 } from '@auth/docs/auth-swagger.doc';
 import { Response } from 'express';
-import { CreateCompanyDto } from '../companies/dto/create-company.dto';
+import { CreateCompanyDto } from '@companies/dto/create-company.dto';
+import { LoginCompanyDto } from '@companies/dto/login-company.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -68,5 +69,13 @@ export default class RegistrationController {
   @HttpCode(200)
   async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) res: Response) {
     return this.authService.loginUser(loginDto, res);
+  }
+
+  @skipAuth()
+  @LoginUserDocs()
+  @Post('login/company')
+  @HttpCode(200)
+  async loginCompany(@Body() loginCompanyDto: LoginCompanyDto, @Res({ passthrough: true }) res: Response) {
+    return this.authService.loginCompany(loginCompanyDto, res);
   }
 }

@@ -17,6 +17,7 @@ import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { CreateCompanyDto } from '@companies/dto/create-company.dto';
 import { CompaniesService } from '@companies/companies.service';
+import { LoginCompanyDto } from '@companies/dto/login-company.dto';
 
 @Injectable()
 export default class AuthenticationService {
@@ -119,6 +120,31 @@ export default class AuthenticationService {
         first_name: user.first_name,
         last_name: user.last_name,
         email: user.email,
+      },
+    };
+
+    return { message: SYS_MSG.LOGIN_SUCCESSFUL, ...responsePayload };
+  }
+
+  async loginCompany(loginCompanyDto: LoginCompanyDto, res: Response) {
+    const { company_email, password } = loginCompanyDto;
+
+    const company = await this.companiesService.getCompanyByEmail(company_email);
+
+    const isMatch = await bcrypt.compare(password, company.password);
+
+    if (!isMatch) {
+      throw new CustomHttpException(SYS_MSG.INVALID_CREDENTIALS, HttpStatus.UNAUTHORIZED);
+    }
+    const payload = { id: company.id, sub: company.id, email: company.company_email };
+    const access_token = await this.jwtService.signAsync(payload);
+    const cookie = this.setCookie(access_token, res);
+    const responsePayload = {
+      access_token,
+      data: {
+        id: company.id,
+        name: company.name,
+        company_email: company.company_email,
       },
     };
 
