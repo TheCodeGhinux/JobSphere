@@ -66,8 +66,6 @@ export class AuthGuard implements CanActivate {
 
     // Check cookies for access_token
     const cookieToken = request.cookies?.access_token;
-    console.log('token in cookies', cookieToken);
-    console.log('req bosy', request);
 
     if (cookieToken) {
       try {
