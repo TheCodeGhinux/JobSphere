@@ -76,7 +76,7 @@ export default class AuthenticationService {
     if (!isMatch) {
       throw new CustomHttpException(SYS_MSG.INVALID_CREDENTIALS, HttpStatus.UNAUTHORIZED);
     }
-    const payload = { id: user.id, sub: user.id };
+    const payload = { id: user.id, sub: user.id, email: user.email };
     const access_token = await this.jwtService.signAsync(payload);
     const cookie = this.setCookie(access_token, res);
     const responsePayload = {

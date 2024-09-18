@@ -55,6 +55,22 @@ export default class UserService {
   //   await this.userRepository.save(user);
   // }
 
+  async findUserByEmail(email: string) {
+    const user: UserResponseDTO = await this.userRepository.findOne({
+      where: { email: email },
+    });
+
+    if (!user) throw new CustomHttpException(SYS_MSG.RESOURCE_NOT_FOUND('User'), 404);
+    return { message: 'User fetched successfully', data: user };
+  }
+
+  async findUserById(id: string) {
+    const user: UserResponseDTO = await this.getUserById(id);
+
+    if (!user) throw new CustomHttpException(SYS_MSG.RESOURCE_NOT_FOUND('User'), 404);
+    return { message: 'User fetched successfully', data: user };
+  }
+
   async updateUser(userId: string, updateUserDto: UpdateUserDto, currentUser: UserPayload) {
     if (!userId) {
       throw new CustomHttpException('UserId is required', HttpStatus.BAD_REQUEST);
