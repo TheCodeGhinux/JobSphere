@@ -48,7 +48,7 @@ export class UserController {
 
   @Get('id')
   async findUserById(@Req() req) {
-    const userId = req.user.id;
+    const userId = req.user.sub;
     return this.userService.findUserById(userId);
   }
 
