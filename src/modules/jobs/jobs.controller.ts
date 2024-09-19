@@ -34,8 +34,9 @@ export class JobsController {
     return await this.jobsService.updateJob(id, updateJobDto);
   }
 
+  @UseGuards(CompanyOwnersGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.jobsService.remove(+id);
+  async deleteJob(@Param('id') id: string) {
+    return await this.jobsService.deleteJob(id);
   }
 }
