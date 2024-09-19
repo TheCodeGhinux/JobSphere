@@ -6,6 +6,8 @@ import { RolesGuard } from '@guards/roles.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { CompanyOwnersGuard } from '@/guards/company-owner.guard';
 import { CreateJobDocs, FindAllJobsDocs, FindJobByIdDocs, RemoveJobDocs, UpdateJobDocs } from './docs/job.docs';
+import { AuthGuard } from '@/guards/auth.guard';
+import { JobApplicationDto } from './dto/job-application.dto';
 
 @Controller('jobs')
 @ApiTags('Jobs')
@@ -37,6 +39,16 @@ export class JobsController {
   @Patch(':id')
   async updateJob(@Param('id') id: string, @Body() updateJobDto: UpdateJobDto) {
     return await this.jobsService.updateJob(id, updateJobDto);
+  }
+
+  @Post('/:jobId/apply')
+  async applyToJob(
+    @Param('jobId', new ParseUUIDPipe()) jobId: string,
+    @Body() jobApplicationDto: JobApplicationDto,
+    @Req() req
+  ) {
+    const userId = req.user.sub;
+    return this.jobsService.applyToJob(userId, jobId, jobApplicationDto);
   }
 
   @RemoveJobDocs()

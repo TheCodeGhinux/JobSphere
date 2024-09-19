@@ -11,8 +11,22 @@ import { Job } from './job.entity';
 import { User } from '@user/entities/user.entity';
 import { AbstractBaseEntity } from '@entities/base.entity';
 
+export enum JobApplicationStatus {
+  APPLIED = 'applied',
+  INTERVIEW = 'interview',
+  OFFER = 'offer',
+  REJECTED = 'rejected',
+  HIRED = 'hired',
+}
+
 @Entity('job_applications')
 export class JobApplication extends AbstractBaseEntity {
+  @Column()
+  cv_link: string;
+
+  @Column()
+  location: string;
+
   @ManyToOne(() => User, user => user.id, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: User;
@@ -23,10 +37,10 @@ export class JobApplication extends AbstractBaseEntity {
 
   @Column({
     type: 'enum',
-    enum: ['applied', 'interview', 'offer', 'rejected', 'hired'],
-    default: 'applied',
+    enum: JobApplicationStatus,
+    default: JobApplicationStatus.APPLIED,
   })
-  status: 'applied' | 'interview' | 'offer' | 'rejected' | 'hired';
+  status: JobApplicationStatus;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   appliedAt: Date;

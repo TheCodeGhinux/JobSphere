@@ -5,10 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Company } from './entities/company.entity';
 import { JobsService } from '@jobs/jobs.service';
 import { Job } from '@jobs/entities/job.entity';
+import { JobApplication } from '@jobs/entities/jobs-application.entity';
+import UserService from '@user/user.service';
+import { User } from '@user/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Company, Job])],
+  imports: [TypeOrmModule.forFeature([Company, Job, JobApplication, User])],
   controllers: [CompaniesController],
-  providers: [CompaniesService, JobsService],
+  providers: [CompaniesService, JobsService, UserService],
 })
 export class CompaniesModule {}
