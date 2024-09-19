@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { User } from '@user/entities/user.entity';
+import { Company } from '@companies/entities/company.entity';
 
 @Injectable()
 export class SeedingService {
@@ -8,6 +9,7 @@ export class SeedingService {
 
   async seedDatabase() {
     const userRepository = this.dataSource.getRepository(User);
+    const companyRepository = this.dataSource.getRepository(Company);
     try {
       const existingUsers = await userRepository.count();
       if (existingUsers > 0) {
@@ -32,12 +34,23 @@ export class SeedingService {
           email: 'jane.smith@example.com',
           password: 'Password@123',
         });
+        const cp1 = companyRepository.create({
+          name: 'Company 1',
+          company_email: 'company@example.com',
+          password: 'Password@123',
+        });
 
         await userRepository.save([u1, u2]);
+        await companyRepository.save(cp1);
 
         const savedUsers = await userRepository.find();
+        const savedCompanies = await companyRepository.find();
         if (savedUsers.length !== 2) {
           throw new Error('Failed to create all users');
+        }
+
+        if (savedCompanies.length !== 1) {
+          throw new Error('Failed to create all companies');
         }
 
         await queryRunner.commitTransaction();
@@ -51,7 +64,6 @@ export class SeedingService {
       console.error('Error while checking for existing data:', error.message);
     }
   }
-
   async getUsers(): Promise<User[]> {
     try {
       return this.dataSource.getRepository(User).find();

@@ -1,22 +1,9 @@
 import { IsNotEmpty, IsString, IsEmail, IsEmpty, MinLength, IsStrongPassword } from 'class-validator';
 
-export class CreateCompanyDto {
-  @IsNotEmpty()
-  @IsString()
-  name: string;
-
+export class LoginCompanyDto {
   @IsNotEmpty()
   @IsEmail()
   company_email: string;
-
-  @IsString()
-  industry: string;
-
-  @IsString()
-  location: string;
-
-  @IsString()
-  description: string;
 
   @MinLength(8)
   @IsNotEmpty()

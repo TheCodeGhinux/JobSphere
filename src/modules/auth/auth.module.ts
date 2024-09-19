@@ -10,12 +10,14 @@ import AuthenticationService from './auth.service';
 import UserService from '@user/user.service';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { GoogleAuthService } from './google-auth.service';
+import { Company } from '@companies/entities/company.entity';
+import { CompaniesService } from '@companies/companies.service';
 
 @Module({
   controllers: [RegistrationController],
-  providers: [AuthenticationService, Repository, UserService, GoogleStrategy, GoogleAuthService],
+  providers: [AuthenticationService, Repository, UserService, GoogleStrategy, GoogleAuthService, CompaniesService],
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Company]),
     PassportModule,
     JwtModule.register({
       global: true,
