@@ -55,8 +55,12 @@ export class JobsService {
     return { message: 'Job fetched successfully', data: job };
   }
 
-  update(id: number, updateJobDto: UpdateJobDto) {
-    return `This action updates a #${id} job`;
+  async updateJob(id: string, updateJobDto: UpdateJobDto) {
+    const job = await this.getJobById(id);
+    if (!job) throw new CustomHttpException(SYS_MSG.RESOURCE_NOT_FOUND('Job'), 404);
+    Object.assign(job, updateJobDto);
+    await this.jobsRepository.save(job);
+    return { message: 'Job updated successfully', data: job };
   }
 
   remove(id: number) {
