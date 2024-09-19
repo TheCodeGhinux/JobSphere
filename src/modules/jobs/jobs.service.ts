@@ -16,6 +16,14 @@ export class JobsService {
     private companiesService: CompaniesService
   ) {}
 
+  async getJobById(id: string) {
+    const job = await this.jobsRepository.findOne({
+      where: { id },
+      relations: ['company'],
+    });
+    return job;
+  }
+
   async createJob(createJobDto: CreateJobDto, company_id: string) {
     const company = await this.companiesService.findById(company_id);
     const newJob = new Job();
@@ -34,8 +42,17 @@ export class JobsService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} job`;
+  async findAllJobs() {
+    const jobs = await this.jobsRepository.find({
+      relations: ['company'],
+    });
+    return { message: 'Jobs found successfully', data: jobs };
+  }
+
+  async findJobById(id: string) {
+    const job = await this.getJobById(id);
+    if (!job) throw new CustomHttpException(SYS_MSG.RESOURCE_NOT_FOUND('Job'), 404);
+    return { message: 'Job fetched successfully', data: job };
   }
 
   update(id: number, updateJobDto: UpdateJobDto) {

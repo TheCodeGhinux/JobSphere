@@ -64,6 +64,6 @@ export class Job extends AbstractBaseEntity {
   })
   status: JobStatus;
 
-  @DeleteDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @DeleteDateColumn()
   deletedAt: Date;
 }
