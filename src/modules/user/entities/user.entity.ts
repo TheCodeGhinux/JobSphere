@@ -12,6 +12,7 @@ import {
   OneToOne,
 } from 'typeorm';
 import { AbstractBaseEntity } from '@entities/base.entity';
+import { Exclude } from 'class-transformer';
 
 export enum UserType {
   SUPER_ADMIN = 'super-admin',
@@ -33,6 +34,7 @@ export class User extends AbstractBaseEntity {
   @Column({ unique: false, nullable: true })
   status: string;
 
+  @Exclude()
   @Column({ nullable: false })
   password: string;
 
