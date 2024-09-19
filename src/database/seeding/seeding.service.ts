@@ -27,12 +27,16 @@ export class SeedingService {
           last_name: 'Smith',
           email: 'john.smith@example.com',
           password: 'Password@123',
+          cv_link: 'https://example.com/cv1.pdf',
+          location: 'New York',
         });
         const u2 = userRepository.create({
           first_name: 'Jane',
           last_name: 'Smith',
           email: 'jane.smith@example.com',
           password: 'Password@123',
+          cv_link: 'https://example.com/cv2.pdf',
+          location: 'Los Angeles',
         });
         const cp1 = companyRepository.create({
           name: 'Company 1',
