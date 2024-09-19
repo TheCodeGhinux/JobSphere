@@ -59,13 +59,4 @@ export class CreateUserDTO {
   @IsNotEmpty()
   @IsString()
   user_type: UserType;
-
-  @ApiProperty({
-    description: 'An optional admin secret for elevated permissions',
-    example: 'admin123',
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  admin_secret?: string;
 }

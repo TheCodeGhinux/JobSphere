@@ -22,10 +22,14 @@ import { CustomHttpException } from '@helpers/custom-http-filter';
 import { GenericAuthResponseDto } from '@auth/dto/generic-reponse.dto';
 import { RequestSigninTokenDto } from '@auth/dto/request-signin-token.dto';
 import { ChangePasswordDto } from '@auth/dto/change-password.dto';
+import { CompanyDto } from '@companies/dto/company.dto';
+import { LoginCompanyDto } from '@companies/dto/login-company.dto';
+import { CreateCompanyDto } from '@companies/dto/create-company.dto';
+import { CreateUserDTO } from '../dto/create-user.dto';
 
 export function LoginUserDocs() {
   return applyDecorators(
-    ApiTags('Auth'),
+    ApiTags('Authentication'),
     ApiOperation({ summary: 'Login a user' }),
     ApiBody({ type: LoginDto }),
     ApiResponse({ status: 200, description: 'Login successful', type: LoginResponseDto }),
@@ -33,9 +37,19 @@ export function LoginUserDocs() {
   );
 }
 
+export function LoginCompanyDocs() {
+  return applyDecorators(
+    ApiTags('Authentication'),
+    ApiOperation({ summary: 'Login a Comoany Account' }),
+    ApiBody({ type: LoginCompanyDto }),
+    ApiResponse({ status: 200, description: 'Login successful', type: CompanyDto }),
+    ApiUnauthorizedResponse({ description: 'Invalid credentials', type: LoginErrorResponseDto })
+  );
+}
+
 export function GoogleAuthDocs() {
   return applyDecorators(
-    ApiTags('Auth'),
+    ApiTags('Authentication'),
     ApiOperation({ summary: 'Google Authentication' }),
     ApiBody({ type: GoogleAuthPayloadDto }),
     ApiResponse({ status: 200, description: 'Verify Payload sent from google', type: AuthResponseDto }),
@@ -45,7 +59,7 @@ export function GoogleAuthDocs() {
 
 export function RequestVerificationTokenDocs() {
   return applyDecorators(
-    ApiTags('Auth'),
+    ApiTags('Authentication'),
     ApiBody({
       description: 'Request authentication token',
       type: RequestVerificationToken,
@@ -58,7 +72,7 @@ export function RequestVerificationTokenDocs() {
 
 export function SignInTokenDocs() {
   return applyDecorators(
-    ApiTags('Auth'),
+    ApiTags('Authentication'),
     ApiOperation({ summary: 'Request Signin Token' }),
     ApiBody({ type: RequestSigninTokenDto }),
     ApiResponse({ status: 200, description: 'Sign-in token sent to email', type: GenericAuthResponseDto }),
@@ -68,7 +82,7 @@ export function SignInTokenDocs() {
 
 export function ChangePasswordDocs() {
   return applyDecorators(
-    ApiTags('Auth'),
+    ApiTags('Authentication'),
     ApiBearerAuth(),
     ApiBody({ type: ChangePasswordDto }),
     ApiOperation({ summary: 'Change user password' }),
@@ -80,9 +94,20 @@ export function ChangePasswordDocs() {
 
 export function RegisterUserDocs() {
   return applyDecorators(
-    ApiTags('Auth'),
+    ApiTags('Authentication'),
     ApiOperation({ summary: 'User Registration' }),
+    ApiBody({ type: CreateUserDTO }),
     ApiResponse({ status: 201, description: 'Register a new user', type: SuccessCreateUserResponse }),
     ApiResponse({ status: 400, description: 'User already exists', type: ErrorCreateUserResponse })
+  );
+}
+
+export function RegisterCompanyDocs() {
+  return applyDecorators(
+    ApiTags('Authentication'),
+    ApiOperation({ summary: 'Company Account Registration' }),
+    ApiBody({ type: CreateCompanyDto }),
+    ApiResponse({ status: 201, description: 'Register a new Company', type: CompanyDto }),
+    ApiResponse({ status: 400, description: 'Company already exists', type: ErrorCreateUserResponse })
   );
 }
