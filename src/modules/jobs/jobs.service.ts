@@ -63,7 +63,11 @@ export class JobsService {
     return { message: 'Job updated successfully', data: job };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} job`;
+  async deleteJob(id: string) {
+    const job = await this.getJobById(id);
+    if (!job) throw new CustomHttpException(SYS_MSG.RESOURCE_NOT_FOUND('Job'), 404);
+
+    await this.jobsRepository.softDelete(id);
+    return { message: 'Job deleted successfully' };
   }
 }
