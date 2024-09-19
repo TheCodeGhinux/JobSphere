@@ -15,18 +15,19 @@ export class CreateJobDto {
 
   @IsOptional()
   @IsString()
-  salaryRange?: string;
+  salary_range?: string;
 
   @IsOptional()
   @IsString()
-  skillsRequired?: string;
+  skills_required?: string;
 
   @IsOptional()
-  companyId?: number;
+  company_id?: string;
 
   @IsEnum(JobType)
-  jobType: JobType;
+  job_type: JobType;
 
+  @IsOptional()
   @IsEnum(JobStatus)
   status: JobStatus;
 }

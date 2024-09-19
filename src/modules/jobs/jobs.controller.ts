@@ -1,20 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from '@nestjs/common';
 import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
+import { RolesGuard } from '@guards/roles.guard';
 
 @Controller('jobs')
 export class JobsController {
   constructor(private readonly jobsService: JobsService) {}
 
+  @UseGuards(RolesGuard)
   @Post()
-  create(@Body() createJobDto: CreateJobDto) {
-    return this.jobsService.create(createJobDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.jobsService.findAll();
+  createJob(@Body() createJobDto: CreateJobDto, @Req() req) {
+    const company_id = req.user.sub;
+    return this.jobsService.createJob(createJobDto, company_id);
   }
 
   @Get(':id')

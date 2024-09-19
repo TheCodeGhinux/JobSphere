@@ -11,6 +11,11 @@ import * as SYS_MSG from '@/constant/SystemMessages';
 export class CompaniesService {
   constructor(@InjectRepository(Company) private companyRepository: Repository<Company>) {}
 
+  findById(id: string) {
+    return this.companyRepository.findOne({
+      where: { id },
+    });
+  }
   async getCompanyByEmail(email: string) {
     const company = await this.companyRepository.findOne({
       where: { company_email: email },
@@ -30,6 +35,7 @@ export class CompaniesService {
     }
     return company;
   }
+
   async createCompany(createComapnyPayload: CreateCompanyDto): Promise<any> {
     const newCompany = new Company();
     Object.assign(newCompany, createComapnyPayload);
@@ -40,7 +46,7 @@ export class CompaniesService {
     return `This action returns all companies`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} company`;
   }
 

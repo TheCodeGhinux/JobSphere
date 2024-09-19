@@ -10,6 +10,9 @@ export const INVALID_PASSWORD = 'Invalid password';
 export const LOGIN_SUCCESSFUL = 'Login successful';
 export const LOGIN_ERROR = 'An error occurred during login';
 export const FORBIDDEN_ACTION = 'You do not have the permission to perform this action';
+
+export const FAILED_TO_JOB = 'Failed to create job';
+
 export const RESOURCE_NOT_FOUND = resource => {
   return `${resource} does not exist`;
 };

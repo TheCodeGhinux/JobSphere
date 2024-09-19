@@ -41,10 +41,10 @@ export class Job extends AbstractBaseEntity {
   location: string;
 
   @Column({ nullable: true })
-  salaryRange: string;
+  salary_range: string;
 
   @Column({ nullable: true })
-  skillsRequired: string;
+  skills_required: string;
 
   @ManyToOne(() => Company, company => company.id, { onDelete: 'CASCADE' })
   @JoinColumn()
@@ -55,7 +55,7 @@ export class Job extends AbstractBaseEntity {
     enum: JobType,
     default: JobType.FULL_TIME,
   })
-  jobType: JobType;
+  job_type: JobType;
 
   @Column({
     type: 'enum',
