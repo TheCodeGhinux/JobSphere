@@ -76,10 +76,6 @@ export class JobsService {
     const user = await this.userService.getUserById(userId);
     if (!user) throw new CustomHttpException(SYS_MSG.RESOURCE_NOT_FOUND('User'), 404);
 
-    // Check if the user has already applied to the job
-    // const existingApplication = await this.jobsApplicationRepository.findOne({
-    //   where: { job, user },
-    // });
     const existingApplication = await this.jobsApplicationRepository.findOne({
       where: { job: { id: jobId }, user: { id: userId } },
     });

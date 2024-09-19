@@ -25,12 +25,16 @@ export class CompanyOwnersGuard implements CanActivate {
     const user = request.user as { sub?: string };
     const jobId = request.params.id;
 
+    console.log('request object', request);
+
     if (!user?.sub) {
       throw new UnauthorizedException('User unauthenticated, please sign in.');
     }
 
     // Fetch the current user making the request
     const currentUser = await this.companiesService.findById(user.sub);
+    console.log('current user', currentUser);
+
     if (!currentUser) {
       throw new ForbiddenException('A company account is required to perform this action.');
     }
@@ -55,12 +59,17 @@ export class CompanyOwnersGuard implements CanActivate {
     } else {
       // Otherwise, treat it as a company profile update (existing functionality)
       const companyId = request.params.id;
+      console.log(companyId);
+
       const profile = await this.companiesService.findById(companyId);
+      console.log(profile);
 
       if (!profile) {
         throw new ForbiddenException('Company profile not found.');
       }
 
+      console.log(profile.id);
+      console.log(currentUser.id);
       const isOwner = profile.id === currentUser.id;
 
       if (!isOwner && !isSuperAdmin) {
