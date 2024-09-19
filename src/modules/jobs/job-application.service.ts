@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { Job } from './entities/job.entity';
+import { application } from 'express';
 
 @Injectable()
 export class JobApplicationService {
@@ -13,6 +14,10 @@ export class JobApplicationService {
     @InjectRepository(User) private userRepo: Repository<User>
   ) {}
 
+  async getApplication(applicationId: string) {
+    const application = await this.jobApplicationRepo.findOne({ where: { id: applicationId }, relations: ['job'] });
+    return application;
+  }
   // Update job application status
   async updateApplicationStatus(applicationId: string, status: JobApplicationStatus) {
     const application = await this.jobApplicationRepo.findOne({ where: { id: applicationId }, relations: ['job'] });
@@ -28,4 +33,31 @@ export class JobApplicationService {
       data: newApplicationStatus,
     };
   }
+
+  async getApplicationStatus(applicationId: string) {}
+
+  async getUserApplications(userId: string) {
+    const userApplications = await this.jobApplicationRepo.find({
+      where: { user: { id: userId } },
+      relations: ['job'],
+    });
+
+    if (!userApplications) {
+      throw new NotFoundException('No job application not found for user');
+    }
+
+    return {
+      message: 'Job applications retrieved successfully',
+      data: userApplications,
+    };
+  }
+
+  async getAllApplications() {
+    const applications = await this.jobApplicationRepo.find({ relations: ['job'] });
+    return {
+      message: 'Job applications retrieved successfully',
+      data: applications,
+    };
+  }
+  async getCompanyApplications(userId: string) {}
 }
