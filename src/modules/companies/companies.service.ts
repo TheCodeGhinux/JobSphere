@@ -42,12 +42,19 @@ export class CompaniesService {
     return await this.companyRepository.save(newCompany);
   }
 
-  findAll() {
-    return `This action returns all companies`;
+  async findAll() {
+    const companies = await this.companyRepository.find();
+    return { message: 'Companies found successfully', data: companies };
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} company`;
+  async findOne(id: string) {
+    const company = await this.companyRepository.findOne({
+      where: { id },
+    });
+    if (!company) {
+      throw new CustomHttpException(SYS_MSG.RESOURCE_NOT_FOUND('Company'), 404);
+    }
+    return { message: 'Company found successfully', data: company };
   }
 
   update(id: number, updateCompanyDto: UpdateCompanyDto) {
