@@ -8,12 +8,18 @@ import { CustomHttpException } from '@/helpers/custom-http-filter';
 import * as SYS_MSG from '@constant/SystemMessages';
 import { object } from 'joi';
 import { CompaniesService } from '@companies/companies.service';
+import { JobApplication } from './entities/jobs-application.entity';
+import UserService from '@user/user.service';
+import { JobApplicationDto } from './dto/job-application.dto';
+import { formatJobApplicationResponse } from '@/utils/jobApplicationResponse.util';
 
 @Injectable()
 export class JobsService {
   constructor(
     @InjectRepository(Job) private jobsRepository: Repository<Job>,
-    private companiesService: CompaniesService
+    @InjectRepository(JobApplication) private jobsApplicationRepository: Repository<JobApplication>,
+    private companiesService: CompaniesService,
+    private userService: UserService
   ) {}
 
   async getJobById(id: string) {
@@ -61,6 +67,44 @@ export class JobsService {
     Object.assign(job, updateJobDto);
     await this.jobsRepository.save(job);
     return { message: 'Job updated successfully', data: job };
+  }
+
+  async applyToJob(userId: string, jobId: string, jobApplicationDto: JobApplicationDto) {
+    const job = await this.getJobById(jobId);
+    if (!job) throw new CustomHttpException(SYS_MSG.RESOURCE_NOT_FOUND('Job'), 404);
+
+    const user = await this.userService.getUserById(userId);
+    if (!user) throw new CustomHttpException(SYS_MSG.RESOURCE_NOT_FOUND('User'), 404);
+
+    // Check if the user has already applied to the job
+    // const existingApplication = await this.jobsApplicationRepository.findOne({
+    //   where: { job, user },
+    // });
+    const existingApplication = await this.jobsApplicationRepository.findOne({
+      where: { job: { id: jobId }, user: { id: userId } },
+    });
+    if (existingApplication) {
+      throw new CustomHttpException('You have already applied to this job', 400);
+    }
+
+    // Extract location and cv_link from either the user or jobApplicationDto
+    const location = jobApplicationDto.location || user.location;
+    const cvLink = jobApplicationDto.cv_link || user.cv_link;
+
+    // Check if at least one is provided
+    if (!location && !cvLink) {
+      throw new CustomHttpException('Location or CV link must be provided', 400);
+    }
+
+    const newJobApplication = new JobApplication();
+    Object.assign(newJobApplication, jobApplicationDto);
+    newJobApplication.job = job;
+    newJobApplication.user = user;
+    newJobApplication.location = location;
+    newJobApplication.cv_link = cvLink;
+
+    await this.jobsApplicationRepository.save(newJobApplication);
+    return formatJobApplicationResponse(job, user, newJobApplication);
   }
 
   async deleteJob(id: string) {

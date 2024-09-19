@@ -38,6 +38,12 @@ export class User extends AbstractBaseEntity {
   @Column({ nullable: false })
   password: string;
 
+  @Column({ nullable: false })
+  cv_link: string;
+
+  @Column({ nullable: false })
+  location: string;
+
   @Column({ nullable: true })
   phone_number: string;
 

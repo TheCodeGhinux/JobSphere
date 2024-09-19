@@ -14,5 +14,6 @@ export const mockUser: User = {
   created_at: new Date(),
   updated_at: new Date(),
   hashPassword: () => null,
-  // hashPassword: string
+  cv_link: '',
+  location: '',
 };
