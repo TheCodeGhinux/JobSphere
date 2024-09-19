@@ -3,8 +3,11 @@ import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { RolesGuard } from '@guards/roles.guard';
+import { ApiTags } from '@nestjs/swagger';
+import { CompanyOwnersGuard } from '@/guards/company-owner.guard';
 
 @Controller('jobs')
+@ApiTags('Jobs')
 export class JobsController {
   constructor(private readonly jobsService: JobsService) {}
 
@@ -25,9 +28,10 @@ export class JobsController {
     return await this.jobsService.findJobById(id);
   }
 
+  @UseGuards(CompanyOwnersGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateJobDto: UpdateJobDto) {
-    return this.jobsService.update(+id, updateJobDto);
+  async updateJob(@Param('id') id: string, @Body() updateJobDto: UpdateJobDto) {
+    return await this.jobsService.updateJob(id, updateJobDto);
   }
 
   @Delete(':id')
