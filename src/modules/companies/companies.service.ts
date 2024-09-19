@@ -16,6 +16,7 @@ export class CompaniesService {
       where: { id },
     });
   }
+
   async getCompanyByEmail(email: string) {
     const company = await this.companyRepository.findOne({
       where: { company_email: email },
@@ -47,7 +48,7 @@ export class CompaniesService {
     return { message: 'Companies found successfully', data: companies };
   }
 
-  async findOne(id: string) {
+  async findCompanyById(id: string) {
     const company = await this.companyRepository.findOne({
       where: { id },
     });
@@ -57,8 +58,24 @@ export class CompaniesService {
     return { message: 'Company found successfully', data: company };
   }
 
-  update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    return `This action updates a #${id} company`;
+  async updateCompany(id: string, updateCompanyDto: UpdateCompanyDto) {
+    const company = await this.companyRepository.findOne({
+      where: { id },
+    });
+
+    if (!company) {
+      throw new CustomHttpException(SYS_MSG.RESOURCE_NOT_FOUND('Company'), 404);
+    }
+
+    const updateCompany = await this.companyRepository.update(id, updateCompanyDto);
+    if (!updateCompany) {
+      throw new CustomHttpException(SYS_MSG.FAILED_TO_UPDATE_COMPANY, 400);
+    }
+    const updatedCompany = await this.companyRepository.findOne({
+      where: { id },
+    });
+
+    return { message: 'Company updated successfully', data: updatedCompany };
   }
 
   remove(id: number) {

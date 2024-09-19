@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
+import { CompanyOwnersGuard } from '@guards/company-owner.guard';
 
 @Controller('companies')
 export class CompaniesController {
@@ -13,13 +14,14 @@ export class CompaniesController {
   }
 
   @Get(':id')
-  async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    return await this.companiesService.findOne(id);
+  async findCompanyById(@Param('id', new ParseUUIDPipe()) id: string) {
+    return await this.companiesService.findCompanyById(id);
   }
 
+  @UseGuards(CompanyOwnersGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCompanyDto: UpdateCompanyDto) {
-    return this.companiesService.update(+id, updateCompanyDto);
+  updateCompany(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateCompanyDto: UpdateCompanyDto) {
+    return this.companiesService.updateCompany(id, updateCompanyDto);
   }
 
   @Delete(':id')

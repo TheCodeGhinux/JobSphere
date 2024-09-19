@@ -12,6 +12,7 @@ export const LOGIN_ERROR = 'An error occurred during login';
 export const FORBIDDEN_ACTION = 'You do not have the permission to perform this action';
 
 export const FAILED_TO_JOB = 'Failed to create job';
+export const FAILED_TO_UPDATE_COMPANY = 'Failed to update company';
 
 export const RESOURCE_NOT_FOUND = resource => {
   return `${resource} does not exist`;
