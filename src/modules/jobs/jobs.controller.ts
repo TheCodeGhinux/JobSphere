@@ -5,12 +5,14 @@ import { UpdateJobDto } from './dto/update-job.dto';
 import { RolesGuard } from '@guards/roles.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { CompanyOwnersGuard } from '@/guards/company-owner.guard';
+import { CreateJobDocs, FindAllJobsDocs, FindJobByIdDocs, RemoveJobDocs, UpdateJobDocs } from './docs/job.docs';
 
 @Controller('jobs')
 @ApiTags('Jobs')
 export class JobsController {
   constructor(private readonly jobsService: JobsService) {}
 
+  @CreateJobDocs()
   @UseGuards(RolesGuard)
   @Post()
   createJob(@Body() createJobDto: CreateJobDto, @Req() req) {
@@ -18,22 +20,26 @@ export class JobsController {
     return this.jobsService.createJob(createJobDto, company_id);
   }
 
+  @FindAllJobsDocs()
   @Get()
   async findAllJobs() {
     return await this.jobsService.findAllJobs();
   }
 
+  @FindJobByIdDocs()
   @Get(':id')
   async findJobById(@Param('id', new ParseUUIDPipe()) id: string) {
     return await this.jobsService.findJobById(id);
   }
 
+  @UpdateJobDocs()
   @UseGuards(CompanyOwnersGuard)
   @Patch(':id')
   async updateJob(@Param('id') id: string, @Body() updateJobDto: UpdateJobDto) {
     return await this.jobsService.updateJob(id, updateJobDto);
   }
 
+  @RemoveJobDocs()
   @UseGuards(CompanyOwnersGuard)
   @Delete(':id')
   async deleteJob(@Param('id') id: string) {
