@@ -10,6 +10,7 @@ import { SeedingService } from '@db/seeding/seeding.service';
 import { ResponseInterceptor } from '@shared/inteceptors/response.interceptor';
 import findAvailablePort from '@helpers/find-port';
 import { SanitizeUserInterceptor } from './shared/inteceptors/user-res.interceptor';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { bufferLogs: true });
@@ -32,6 +33,7 @@ async function bootstrap() {
   app.enable('trust proxy');
   app.useLogger(logger);
   app.enableCors();
+  app.use(cookieParser());
   app.setGlobalPrefix('api/v1', { exclude: ['/', 'health', 'api', 'api/v1', 'api/docs', 'probe'] });
   app.useGlobalInterceptors(new SanitizeUserInterceptor());
   app.useGlobalInterceptors(new ResponseInterceptor());

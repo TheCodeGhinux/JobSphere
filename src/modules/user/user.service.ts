@@ -34,100 +34,67 @@ export default class UserService {
     return await this.userRepository.save(newUser);
   }
 
-  async updateUserRecord(userUpdateOptions: UpdateUserRecordOption) {
-    const { updatePayload, identifierOptions } = userUpdateOptions;
-    const user = await this.getUserRecord(identifierOptions);
-    Object.assign(user, updatePayload);
-    await this.userRepository.save(user);
+  async getUserById(id: string) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+    });
+    return user;
   }
 
-  public async createUserGoogle(userPayload) {
-    const newUser = new User();
-    const userData = {
-      email: userPayload.email,
-      name: `${userPayload.given_name} ${userPayload.family_name}`,
-      first_name: userPayload.given_name,
-      last_name: userPayload.family_name,
-    };
-    Object.assign(newUser, userData);
-    newUser.is_active = true;
-    return this.userRepository.save(newUser);
+  async getUserByemail(email: string) {
+    const user = await this.userRepository.findOne({
+      where: { email },
+    });
+    return user;
   }
 
-  private async getUserByEmail(email: string) {
+  // async updateUserRecord(userUpdateOptions: UpdateUserRecordOption) {
+  //   const { updatePayload, identifierOptions } = userUpdateOptions;
+  //   const user = await this.getUserById(identifierOptions);
+  //   Object.assign(user, updatePayload);
+  //   await this.userRepository.save(user);
+  // }
+
+  async findUserByEmail(email: string) {
     const user: UserResponseDTO = await this.userRepository.findOne({
       where: { email: email },
     });
-    return user;
+
+    if (!user) throw new CustomHttpException(SYS_MSG.RESOURCE_NOT_FOUND('User'), 404);
+    return { message: 'User fetched successfully', data: user };
   }
 
-  private async getUserById(identifier: string) {
-    const user: UserResponseDTO = await this.userRepository.findOne({
-      where: { id: identifier },
-    });
-    return user;
-  }
+  async findUserById(id: string) {
+    const user: UserResponseDTO = await this.getUserById(id);
 
-  async getUserRecord(identifierOptions: UserIdentifierOptionsType) {
-    const { identifier, identifierType } = identifierOptions;
-
-    const GetRecord = {
-      id: async () => this.getUserById(String(identifier)),
-      email: async () => this.getUserByEmail(String(identifier)),
-    };
-
-    return await GetRecord[identifierType]();
+    if (!user) throw new CustomHttpException(SYS_MSG.RESOURCE_NOT_FOUND('User'), 404);
+    return { message: 'User fetched successfully', data: user };
   }
 
   async updateUser(userId: string, updateUserDto: UpdateUserDto, currentUser: UserPayload) {
     if (!userId) {
-      throw new BadRequestException({
-        error: 'Bad Request',
-        message: 'UserId is required',
-        status_code: HttpStatus.BAD_REQUEST,
-      });
+      throw new CustomHttpException('UserId is required', HttpStatus.BAD_REQUEST);
     }
 
-    const identifierOptions: UserIdentifierOptionsType = {
-      identifierType: 'id',
-      identifier: userId,
-    };
-    const user = await this.getUserRecord(identifierOptions);
+    const user = await this.getUserById(userId);
     if (!user) {
-      throw new NotFoundException({
-        error: 'Not Found',
-        message: 'User not found',
-        status_code: HttpStatus.NOT_FOUND,
-      });
+      throw new CustomHttpException(SYS_MSG.USER_NOT_FOUND, 404);
     }
     // TODO: CHECK IF USER IS AN ADMIN
     if (currentUser.id !== userId) {
-      throw new ForbiddenException({
-        error: 'Forbidden',
-        message: 'You are not authorized to update this user',
-        status_code: HttpStatus.FORBIDDEN,
-      });
+      throw new CustomHttpException('You are not authorized to update this user', HttpStatus.FORBIDDEN);
     }
 
     try {
       Object.assign(user, updateUserDto);
       await this.userRepository.save(user);
     } catch (error) {
-      throw new BadRequestException({
-        error: 'Bad Request',
-        message: 'Failed to update user',
-        status_code: HttpStatus.BAD_REQUEST,
-      });
+      throw new CustomHttpException('Failed to update user', HttpStatus.BAD_REQUEST);
     }
 
     return {
-      status: 'success',
       message: 'User Updated Successfully',
-      user: {
-        id: user.id,
-        name: `${user.first_name} ${user.last_name}`,
-        phone_number: user.phone_number,
-      },
+      data: user,
     };
   }
 
@@ -137,7 +104,7 @@ export default class UserService {
     });
 
     if (!user) {
-      throw new CustomHttpException('User not found', HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(SYS_MSG.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
     if (user.id !== authenticatedUserId) {
@@ -147,37 +114,7 @@ export default class UserService {
     await this.userRepository.softDelete(userId);
 
     return {
-      status: 'success',
-      message: 'Deletion in progress',
-    };
-  }
-
-  // async getUserStatistics(currentUser: UserPayload): Promise<any> {
-  // if (currentUser.user_type !== UserType.SUPER_ADMIN) {
-  //   throw new ForbiddenException({
-  //     error: 'Forbidden',
-  //     message: 'You are not authorized to access user statistics',
-  //   });
-  // }
-  async updateUserStatus(userId: string, status: string) {
-    const keepColumns = ['id', 'created_at', 'updated_at', 'first_name', 'last_name', 'email', 'status'];
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-    });
-    if (!user) {
-      throw new NotFoundException({
-        error: 'Not Found',
-        message: 'User not found',
-        status_code: HttpStatus.NOT_FOUND,
-      });
-    }
-    const updatedUser = Object.assign(user, { status });
-    const result = await this.userRepository.save(updatedUser);
-
-    return {
-      status: 'success',
-      status_code: HttpStatus.OK,
-      data: pick(result, keepColumns),
+      message: 'User deleted successfully',
     };
   }
 }

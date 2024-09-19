@@ -21,6 +21,7 @@ import {
   Get,
   Patch,
   Query,
+  Param,
 } from '@nestjs/common';
 import { CreateUserDTO } from '@auth/dto/create-user.dto';
 import { skipAuth } from '@helpers/skipAuth';
@@ -39,6 +40,8 @@ import {
   SignInTokenDocs,
 } from '@auth/docs/auth-swagger.doc';
 import { Response } from 'express';
+import { CreateCompanyDto } from '@companies/dto/create-company.dto';
+import { LoginCompanyDto } from '@companies/dto/login-company.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -49,8 +52,15 @@ export default class RegistrationController {
   @RegisterUserDocs()
   @Post('register')
   @HttpCode(201)
-  public async register(@Body() body: CreateUserDTO): Promise<any> {
+  public async registerUser(@Body() body: CreateUserDTO): Promise<any> {
     return this.authService.createNewUser(body);
+  }
+
+  @skipAuth()
+  @Post('register/company')
+  @HttpCode(201)
+  public async registerCompany(@Body() body: CreateCompanyDto): Promise<any> {
+    return this.authService.createNewCompany(body);
   }
 
   @skipAuth()
@@ -62,36 +72,10 @@ export default class RegistrationController {
   }
 
   @skipAuth()
-  @Post('google')
-  @GoogleAuthDocs()
+  @LoginUserDocs()
+  @Post('login/company')
   @HttpCode(200)
-  async googleAuth(@Body() body: GoogleAuthPayload, @Query('mobile') isMobile: string) {
-    return this.authService.googleAuth({ googleAuthPayload: body, isMobile });
-  }
-
-  @skipAuth()
-  @HttpCode(200)
-  @RequestVerificationTokenDocs()
-  @Post('request/token')
-  async requestVerificationToken(@Body() body: { email: string }) {
-    const { email } = body;
-    return this.authService.requestSignInToken({ email });
-  }
-
-  @skipAuth()
-  @SignInTokenDocs()
-  @Post('magic-link')
-  @HttpCode(200)
-  public async signInToken(@Body() body: RequestSigninTokenDto) {
-    return await this.authService.requestSignInToken(body);
-  }
-
-  @ChangePasswordDocs()
-  @HttpCode(200)
-  @Post('change-password')
-  public async changePassword(@Body() body: ChangePasswordDto, @Req() request: Request): Promise<any> {
-    const user = request['user'];
-    const userId = user.id;
-    return this.authService.changePassword(userId, body.oldPassword, body.newPassword);
+  async loginCompany(@Body() loginCompanyDto: LoginCompanyDto, @Res({ passthrough: true }) res: Response) {
+    return this.authService.loginCompany(loginCompanyDto, res);
   }
 }
