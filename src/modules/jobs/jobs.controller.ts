@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
@@ -15,9 +15,14 @@ export class JobsController {
     return this.jobsService.createJob(createJobDto, company_id);
   }
 
+  @Get()
+  async findAllJobs() {
+    return await this.jobsService.findAllJobs();
+  }
+
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.jobsService.findOne(+id);
+  async findJobById(@Param('id', new ParseUUIDPipe()) id: string) {
+    return await this.jobsService.findJobById(id);
   }
 
   @Patch(':id')

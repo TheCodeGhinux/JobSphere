@@ -21,9 +21,6 @@ export class CompaniesService {
     const company = await this.companyRepository.findOne({
       where: { company_email: email },
     });
-    if (!company) {
-      throw new CustomHttpException(SYS_MSG.RESOURCE_NOT_FOUND('Company'), 404);
-    }
     return company;
   }
 
@@ -31,9 +28,6 @@ export class CompaniesService {
     const company = await this.companyRepository.findOne({
       where: { name },
     });
-    if (!company) {
-      throw new CustomHttpException(SYS_MSG.RESOURCE_NOT_FOUND('Company'), 404);
-    }
     return company;
   }
 
