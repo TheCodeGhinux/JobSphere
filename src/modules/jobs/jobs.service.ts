@@ -12,6 +12,7 @@ import { JobApplication } from './entities/jobs-application.entity';
 import UserService from '@user/user.service';
 import { JobApplicationDto } from './dto/job-application.dto';
 import { formatJobApplicationResponse } from '@/utils/jobApplicationResponse.util';
+import { MailingService } from '../mailing/mailing.service';
 
 @Injectable()
 export class JobsService {
@@ -19,7 +20,8 @@ export class JobsService {
     @InjectRepository(Job) private jobsRepository: Repository<Job>,
     @InjectRepository(JobApplication) private jobsApplicationRepository: Repository<JobApplication>,
     private companiesService: CompaniesService,
-    private userService: UserService
+    private userService: UserService,
+    private readonly mailingService: MailingService
   ) {}
 
   async getJobById(id: string) {
@@ -101,6 +103,15 @@ export class JobsService {
     newJobApplication.cv_link = cvLink;
 
     await this.jobsApplicationRepository.save(newJobApplication);
+
+    // Send confirmation email using MailingService
+    await this.mailingService.sendJobApplicationConfirmation(
+      user.first_name, // applicantName
+      user.email, // userEmail
+      job.title, // jobTitle
+      job.company.name // companyName
+    );
+
     return formatJobApplicationResponse(job, user, newJobApplication);
   }
 

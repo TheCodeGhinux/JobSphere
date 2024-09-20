@@ -8,10 +8,11 @@ import { Job } from '@jobs/entities/job.entity';
 import { JobApplication } from '@jobs/entities/jobs-application.entity';
 import UserService from '@user/user.service';
 import { User } from '@user/entities/user.entity';
+import { MailingService } from '../mailing/mailing.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Company, Job, JobApplication, User])],
   controllers: [CompaniesController],
-  providers: [CompaniesService, JobsService, UserService],
+  providers: [CompaniesService, JobsService, UserService, MailingService],
 })
 export class CompaniesModule {}
