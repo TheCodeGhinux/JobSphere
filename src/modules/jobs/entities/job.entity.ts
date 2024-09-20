@@ -46,6 +46,9 @@ export class Job extends AbstractBaseEntity {
   @Column({ nullable: true })
   skills_required: string;
 
+  @Column({ nullable: true })
+  company_name: string;
+
   @ManyToOne(() => Company, company => company.id, { onDelete: 'CASCADE' })
   @JoinColumn()
   company: Company;

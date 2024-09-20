@@ -130,6 +130,9 @@ export default class AuthenticationService {
     const { company_email, password } = loginCompanyDto;
 
     const company = await this.companiesService.getCompanyByEmail(company_email);
+    if (!company) {
+      throw new CustomHttpException(SYS_MSG.RESOURCE_NOT_FOUND('Company'), HttpStatus.NOT_FOUND);
+    }
 
     const isMatch = await bcrypt.compare(password, company.password);
 
