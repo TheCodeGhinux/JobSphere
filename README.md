@@ -1,4 +1,4 @@
-# [App Name] Integration Documentation
+# JobSphere Integration Documentation
 
 ## Overview
 
@@ -72,7 +72,7 @@ where "url you just copied" (without the quotation marks) is the url to this rep
 For example:
 
 ```bash
-git clone git@github.com:this-is-you/hng_project.git
+git clone git@github.com:this-is-you/jobsphere_project.git
 ```
 
 where `this-is-you` is your GitHub username. Here you're copying the contents of the first-contributions repository on GitHub to your computer.
@@ -82,7 +82,7 @@ where `this-is-you` is your GitHub username. Here you're copying the contents of
 Change to the repository directory on your computer (if you are not already there):
 
 ```bash
-cd hng_project
+cd jobsphere_project
 ```
 
 Now create a branch using the `git switch` command:
