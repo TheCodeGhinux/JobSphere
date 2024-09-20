@@ -23,6 +23,7 @@ import { join } from 'path';
 import { JobsModule } from './modules/jobs/jobs.module';
 import { CompaniesModule } from './modules/companies/companies.module';
 import { TransformInterceptor } from './shared/inteceptors/transform.interceptor';
+import { MailingModule } from './modules/mailing/mailing.module';
 @Module({
   providers: [
     {
@@ -86,10 +87,10 @@ import { TransformInterceptor } from './shared/inteceptors/transform.interceptor
           },
         },
         defaults: {
-          from: `"Team Remote Bingo" <${configService.get<string>('SMTP_USER')}>`,
+          from: `"Job Sphere" <${configService.get<string>('SMTP_USER')}>`,
         },
         template: {
-          dir: process.cwd() + '/src/modules/email/templates',
+          dir: process.cwd() + '/src/modules/mailing/templates',
           adapter: new HandlebarsAdapter(),
           options: {
             strict: true,
@@ -119,6 +120,7 @@ import { TransformInterceptor } from './shared/inteceptors/transform.interceptor
 
     JobsModule,
     CompaniesModule,
+    MailingModule,
   ],
   controllers: [HealthController, ProbeController],
 })

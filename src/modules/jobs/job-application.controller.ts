@@ -55,7 +55,7 @@ export class JobApplicationController {
   @UseGuards(JobApplicationOwnerGuard)
   async rejectApplication(@Param('applicationId') applicationId: string) {
     const status = JobApplicationStatus.REJECTED;
-    return this.jobApplicationService.updateApplicationStatus(applicationId, status);
+    return this.jobApplicationService.rejectApplication(applicationId);
   }
 
   // Company hires a candidate
@@ -64,7 +64,7 @@ export class JobApplicationController {
   @UseGuards(JobApplicationOwnerGuard)
   async hireCandidate(@Param('applicationId') applicationId: string) {
     const status = JobApplicationStatus.HIRED;
-    return this.jobApplicationService.updateApplicationStatus(applicationId, status);
+    return this.jobApplicationService.hireCandidate(applicationId);
   }
 
   // Company offers a job
@@ -72,8 +72,7 @@ export class JobApplicationController {
   @Patch(':applicationId/offer')
   @UseGuards(JobApplicationOwnerGuard)
   async offerJob(@Param('applicationId') applicationId: string) {
-    const status = JobApplicationStatus.OFFER;
-    return this.jobApplicationService.updateApplicationStatus(applicationId, status);
+    return this.jobApplicationService.offerJob(applicationId);
   }
 
   // Company schedules an interview
@@ -81,7 +80,6 @@ export class JobApplicationController {
   @Patch(':applicationId/interview')
   @UseGuards(JobApplicationOwnerGuard)
   async scheduleInterview(@Param('applicationId') applicationId: string) {
-    const status = JobApplicationStatus.INTERVIEW;
-    return this.jobApplicationService.updateApplicationStatus(applicationId, status);
+    return this.jobApplicationService.scheduleInterview(applicationId);
   }
 }

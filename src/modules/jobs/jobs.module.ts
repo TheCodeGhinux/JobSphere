@@ -10,10 +10,11 @@ import { JobApplication } from './entities/jobs-application.entity';
 import UserService from '@user/user.service';
 import { User } from '@user/entities/user.entity';
 import { JobApplicationService } from './job-application.service';
+import { MailingService } from '../mailing/mailing.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Job, Company, JobApplication, User])],
   controllers: [JobsController, JobApplicationController],
-  providers: [JobsService, CompaniesService, UserService, JobApplicationService],
+  providers: [JobsService, CompaniesService, UserService, JobApplicationService, MailingService],
 })
 export class JobsModule {}

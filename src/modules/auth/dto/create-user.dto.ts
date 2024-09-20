@@ -53,6 +53,22 @@ export class CreateUserDTO {
   phone_number: string;
 
   @ApiProperty({
+    description: 'The cv link of the user',
+    example: 'example.url',
+  })
+  @IsNotEmpty()
+  @IsString()
+  cv_link: string;
+
+  @ApiProperty({
+    description: 'The location of the user',
+    example: 'Ikeja, Lagos',
+  })
+  @IsNotEmpty()
+  @IsString()
+  location: string;
+
+  @ApiProperty({
     description: 'Account type of user, either company or user',
     example: 'user',
   })

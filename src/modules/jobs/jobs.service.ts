@@ -36,6 +36,7 @@ export class JobsService {
     Object.assign(newJob, createJobDto);
     newJob.status = JobStatus.OPEN;
     newJob.company = company;
+    newJob.company_name = company.name;
 
     if (!newJob) {
       throw new CustomHttpException(SYS_MSG.FAILED_TO_JOB, 400);
